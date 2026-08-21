@@ -1,0 +1,11 @@
+import { Router } from 'express';
+import { authenticate } from '../middleware/authenticate.js';
+import { authorize } from '../middleware/authorize.js';
+import * as controller from '../controllers/operationsController.js';
+const router=Router();
+const operational=[authenticate,authorize(['ADMIN','OPERATIONS_USER'])];
+router.use(...operational);
+router.get('/inventory',controller.getInventory); router.post('/inventory',controller.postInventory); router.patch('/inventory/:id',controller.patchInventory);
+router.get('/work-orders',controller.getWorkOrders); router.post('/work-orders',controller.postWorkOrder); router.patch('/work-orders/:id/status',controller.patchWorkOrder);
+router.get('/transfers',controller.getTransfers); router.post('/transfers',controller.postTransfer); router.post('/transfers/:id/dispatch',controller.dispatch); router.post('/transfers/:id/receive',controller.receive);
+export default router;

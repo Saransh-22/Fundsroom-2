@@ -4,6 +4,7 @@ import healthRoutes from './routes/healthRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import { authenticate } from './middleware/authenticate.js';
 import { authorize } from './middleware/authorize.js';
+import operationsRoutes from './routes/operationsRoutes.js';
 
 interface AuthRequest extends Request {
   user?: {
@@ -41,6 +42,8 @@ app.get('/api/test-operator', authenticate, authorize(['OPERATIONS_USER']), (req
 app.get('/api/test-sales', authenticate, authorize(['SALES_USER']), (req: AuthRequest, res: Response) => {
   res.status(200).json({ message: 'Sales access granted' });
 });
+
+app.use('/api', operationsRoutes);
 
 // 404 handler
 app.use((req: Request, res: Response) => {
