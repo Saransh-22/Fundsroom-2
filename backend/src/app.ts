@@ -5,6 +5,7 @@ import authRoutes from './routes/authRoutes.js';
 import { authenticate } from './middleware/authenticate.js';
 import { authorize } from './middleware/authorize.js';
 import operationsRoutes from './routes/operationsRoutes.js';
+import customerOrderRoutes from './routes/customerOrderRoutes.js';
 
 interface AuthRequest extends Request {
   user?: {
@@ -43,6 +44,7 @@ app.get('/api/test-sales', authenticate, authorize(['SALES_USER']), (req: AuthRe
   res.status(200).json({ message: 'Sales access granted' });
 });
 
+app.use('/api', customerOrderRoutes);
 app.use('/api', operationsRoutes);
 
 // 404 handler
