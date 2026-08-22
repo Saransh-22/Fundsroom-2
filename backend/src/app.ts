@@ -45,7 +45,7 @@ app.get('/api/test-sales', authenticate, authorize(['SALES_USER']), (req: AuthRe
 });
 
 app.use('/api', customerOrderRoutes);
-app.use('/api', operationsRoutes);
+app.use('/api', (req, res, next) => { console.log('Entering operationsRoutes with URL:', req.url); next(); }, operationsRoutes);
 
 // 404 handler
 app.use((req: Request, res: Response) => {

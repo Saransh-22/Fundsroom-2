@@ -1,9 +1,13 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { AuthProvider } from '../auth/authContext';
-import Layout from '../components/layout';
+import Layout from '../components/layout/Layout';
 import Login from '../pages/Login';
-// We'll add other pages later as we build them
+import Dashboard from '../pages/Dashboard';
+import Inventory from '../pages/Inventory';
+import WorkOrders from '../pages/WorkOrders';
+import Transfers from '../pages/Transfers';
+import CustomerOrders from '../pages/CustomerOrders';
 import { useAuth } from '../auth/authContext';
 
 // Protected route component
@@ -26,8 +30,11 @@ const AppRoutes: React.FC = () => {
           <Route path="/login" element={<Login />} />
           {/* Protected routes */}
           <Route element={<ProtectedLayout />}>
-            <Route path="/" element={<><h2>Welcome to the ERP</h2><p>This is the home page. More screens will be added in later phases.</p></>} />
-            {/* Placeholder for other protected routes */}
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/inventory" element={<Inventory />} />
+            <Route path="/work-orders" element={<WorkOrders />} />
+            <Route path="/transfers" element={<Transfers />} />
+            <Route path="/customer-orders" element={<CustomerOrders />} />
           </Route>
           {/* Redirect to home if path not found */}
           <Route path="*" element={<Navigate to="/" replace />} />
