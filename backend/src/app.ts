@@ -1,5 +1,7 @@
 import type { Request, Response } from 'express';
 import express from 'express';
+import cors from 'cors';
+
 import healthRoutes from './routes/healthRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import { authenticate } from './middleware/authenticate.js';
@@ -17,6 +19,18 @@ interface AuthRequest extends Request {
 
 const app: express.Application = express();
 
+// CORS
+app.use(
+  cors({
+    origin: [
+      'https://fundsroom-2.vercel.app',
+      'http://localhost:5173',
+    ],
+    methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  })
+);
+
 // Middleware
 app.use(express.json());
 
@@ -27,25 +41,55 @@ app.use('/api', healthRoutes);
 app.use('/api/auth', authRoutes);
 
 // Example protected route (for testing)
-app.get('/api/protected', authenticate, (req: AuthRequest, res: Response) => {
-  res.status(200).json({ message: 'This is a protected route', user: req.user });
-});
+app.get(
+  '/api/protected',
+  authenticate,
+  (req: AuthRequest, res: Response) => {
+    res.status(200).json({
+      message: 'This is a protected route',
+      user: req.user,
+    });
+  }
+);
 
 // Test routes for role-based access control
-app.get('/api/test-admin', authenticate, authorize(['ADMIN']), (req: AuthRequest, res: Response) => {
-  res.status(200).json({ message: 'Admin access granted' });
-});
+app.get(
+  '/api/test-admin',
+  authenticate,
+  authorize(['ADMIN']),
+  (req: AuthRequest, res: Response) => {
+    res.status(200).json({ message: 'Admin access granted' });
+  }
+);
 
-app.get('/api/test-operator', authenticate, authorize(['OPERATIONS_USER']), (req: AuthRequest, res: Response) => {
-  res.status(200).json({ message: 'Operator access granted' });
-});
+app.get(
+  '/api/test-operator',
+  authenticate,
+  authorize(['OPERATIONS_USER']),
+  (req: AuthRequest, res: Response) => {
+    res.status(200).json({ message: 'Operator access granted' });
+  }
+);
 
-app.get('/api/test-sales', authenticate, authorize(['SALES_USER']), (req: AuthRequest, res: Response) => {
-  res.status(200).json({ message: 'Sales access granted' });
-});
+app.get(
+  '/api/test-sales',
+  authenticate,
+  authorize(['SALES_USER']),
+  (req: AuthRequest, res: Response) => {
+    res.status(200).json({ message: 'Sales access granted' });
+  }
+);
 
 app.use('/api', customerOrderRoutes);
-app.use('/api', (req, res, next) => { console.log('Entering operationsRoutes with URL:', req.url); next(); }, operationsRoutes);
+
+app.use(
+  '/api',
+  (req, res, next) => {
+    console.log('Entering operationsRoutes with URL:', req.url);
+    next();
+  },
+  operationsRoutes
+);
 
 // 404 handler
 app.use((req: Request, res: Response) => {
@@ -53,9 +97,16 @@ app.use((req: Request, res: Response) => {
 });
 
 // Error handling middleware
-app.use((err: Error, req: Request, res: Response, next: Function) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Something went wrong!' });
-});
+app.use(
+  (
+    err: Error,
+    req: Request,
+    res: Response,
+    next: Function
+  ) => {
+    console.error(err.stack);
+    res.status(500).json({ error: 'Something went wrong!' });
+  }
+);
 
 export default app;
