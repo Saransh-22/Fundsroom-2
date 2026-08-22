@@ -15,7 +15,7 @@ The application is built using a modern full-stack architecture:
 
 ```mermaid
 flowchart TD
-    subgraph Frontend [Frontend (React / Vite)]
+    subgraph Frontend ["Frontend (React / Vite)"]
         A[React UI Components]
         B[State & Auth Context]
         C[Axios API Client]
@@ -24,7 +24,7 @@ flowchart TD
         A --> C
     end
 
-    subgraph Backend [Backend (Express / Node.js)]
+    subgraph Backend ["Backend (Express / Node.js)"]
         D[REST API Routes]
         E[Auth Middleware]
         F[Role Authorization]
@@ -36,7 +36,7 @@ flowchart TD
         F --> G
     end
 
-    subgraph Database [Database]
+    subgraph Database ["Database"]
         H[(PostgreSQL)]
         
         G -->|pg driver| H
