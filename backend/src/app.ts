@@ -22,10 +22,18 @@ const app: express.Application = express();
 // CORS
 app.use(
   cors({
-    origin: [
-      'https://fundsroom-2.vercel.app',
-      'http://localhost:5173',
-    ],
+    origin: (origin, callback) => {
+      if (
+        !origin ||
+        origin === 'http://localhost:5173' ||
+        origin === 'https://fundsroom-2.vercel.app' ||
+        origin.endsWith('.vercel.app')
+      ) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
   })
